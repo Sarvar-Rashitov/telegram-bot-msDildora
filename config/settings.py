@@ -99,6 +99,19 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'users:dashboard'
 LOGOUT_REDIRECT_URL = 'users:login'
 
+# Security Settings for Production
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_SECURITY_POLICY = {
+    'default-src': ("'self'", "https:"),
+    'script-src': ("'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"),
+    'style-src': ("'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"),
+    'img-src': ("'self'", "data:", "https:"),
+    'font-src': ("'self'", "https://cdn.jsdelivr.net"),
+}
+
 # Telegram Bot
 BOT_TOKEN = config('BOT_TOKEN', default='')
 BOT_USERNAME = config('BOT_USERNAME', default='')

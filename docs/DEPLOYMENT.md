@@ -1,175 +1,136 @@
-# Deployment Guide
+# Render.com Deploy Qo'llanmasi
 
-## Local Development
+## Talab qiladigan ma'lumotlar
 
-1. **Setup**
+1. **PostgreSQL Database** (Supabase yoki AWS RDS)
+   - Database URL
+   - Username
+   - Password
+   - Host
+   - Port (default: 5432)
+
+2. **Django Environment Variables**
+   - SECRET_KEY (strong random key)
+   - BOT_TOKEN (Telegram bot token)
+   - CLICK Payment credentials
+
+## Deploy Qadamlari
+
+### 1. GitHub-ga Push qiling
 ```bash
-setup.bat
+git add .
+git commit -m "Prepare for Render deployment"
+git push origin main
 ```
 
-2. **Configure .env**
-Edit `.env` file with your credentials:
-- BOT_TOKEN
-- CLICK credentials
-- PRIVATE_CHANNEL_ID
+### 2. Render.com-da Repo ulang
+- https://render.com ga kiring
+- New -> Web Service
+- GitHub repository'ni tanlang
+- Branch: main
 
-3. **Run Web Server**
-```bash
-run_web.bat
+### 3. Environment Variables o'rnatish
+
+Render dashboard'da quyidagi variables o'rnatish:
+
 ```
+DEBUG=False
+SECRET_KEY=<strong-random-key>
+ALLOWED_HOSTS=your-app.onrender.com
 
-4. **Run Bot**
-```bash
-run_bot.bat
-```
-
-## Production (Supabase + VPS)
-
-### 1. Database Setup (Supabase)
-
-1. Create Supabase project
-2. Get PostgreSQL connection string
-3. Update `.env`:
-```env
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_HOST=db.xxx.supabase.co
+DB_USER=your-db-user
+DB_PASSWORD=your-db-password
+DB_HOST=your-db-host.pooler.supabase.com
 DB_PORT=5432
+
+BOT_TOKEN=your-telegram-token
+BOT_USERNAME=your-bot-username
+CLICK_MERCHANT_ID=your-merchant-id
+CLICK_SERVICE_ID=your-service-id
+CLICK_SECRET_KEY=your-secret-key
 ```
 
-### 2. VPS Setup
+### 4. Deploy
 
-1. **Install Dependencies**
+Deploy avtomatik boshlandi. Render logs'da status'ni kuzatish:
+
+```
+✓ Build started
+✓ Dependencies installed
+✓ Static files collected
+✓ Database migrations applied
+✓ Superuser created
+✓ Server started on port 10000
+```
+
+### 5. Birinchi Login
+
+Admin panel:
+- URL: `https://your-app.onrender.com/admin`
+- Username: `admin`
+- Password: `admin123`
+
+Web Dashboard:
+- URL: `https://your-app.onrender.com/`
+
+## Masalalar va Yechimlar
+
+### "Build failed" Xatosi
+
+Build qadamini tekshiring:
+```
+- runtime.txt da Python 3.11.9
+- requirements.txt da barcha dependencies
+- build.sh faylining permission'i executable
+```
+
+### Database Ulanish Xatosi
+
+- PostgreSQL host'ni tekshiring
+- Credentials to'g'ri kirganini tekshiring
+- Firewall rules'ni tekshiring (Supabase)
+
+### Static Files Ko'rinmayapti
+
+Qo'lda static files collect qilish:
 ```bash
-sudo apt update
-sudo apt install python3 python3-pip python3-venv nginx supervisor
+python manage.py collectstatic --noinput
 ```
 
-2. **Clone Project**
+## Backup va Maintenance
+
+### Database Backup
+Supabase dashboard'da:
+1. Settings -> Backups
+2. Automatic backups ON
+
+### Logs Kuzatish
+Render Dashboard -> Logs -> View Live Logs
+
+### Updates Qilish
+
 ```bash
-git clone your-repo.git
-cd telegram_subscription
+# Lokal o'zgarish
+git add .
+git commit -m "Update"
+git push origin main
+
+# Render avtomatik redeploy qiladi
 ```
 
-3. **Setup Virtual Environment**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+## Security
 
-4. **Configure Environment**
-```bash
-cp .env.example .env
-nano .env
-```
+- [ ] SECRET_KEY o'zgartirilgan
+- [ ] DEBUG = False
+- [ ] ALLOWED_HOSTS to'g'ri
+- [ ] HTTPS enabled (avtomatik)
+- [ ] CSRF_COOKIE_SECURE = True
 
-5. **Run Migrations**
-```bash
-python manage.py migrate
-python manage.py collectstatic
-python manage.py createsuperuser
-```
+## Support
 
-### 3. Supervisor Configuration
-
-Create `/etc/supervisor/conf.d/telegram_bot.conf`:
-```ini
-[program:telegram_bot]
-command=/home/user/telegram_subscription/venv/bin/python manage.py runbot
-directory=/home/user/telegram_subscription
-user=user
-autostart=true
-autorestart=true
-redirect_stderr=true
-stdout_logfile=/var/log/telegram_bot.log
-```
-
-Create `/etc/supervisor/conf.d/django_web.conf`:
-```ini
-[program:django_web]
-command=/home/user/telegram_subscription/venv/bin/gunicorn config.wsgi:application --bind 0.0.0.0:8000
-directory=/home/user/telegram_subscription
-user=user
-autostart=true
-autorestart=true
-redirect_stderr=true
-stdout_logfile=/var/log/django_web.log
-```
-
-Reload supervisor:
-```bash
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl start all
-```
-
-### 4. Nginx Configuration
-
-Create `/etc/nginx/sites-available/telegram_subscription`:
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    location /static/ {
-        alias /home/user/telegram_subscription/staticfiles/;
-    }
-
-    location /media/ {
-        alias /home/user/telegram_subscription/media/;
-    }
-}
-```
-
-Enable site:
-```bash
-sudo ln -s /etc/nginx/sites-available/telegram_subscription /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
-```
-
-### 5. SSL (Optional)
-```bash
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d your-domain.com
-```
-
-## Monitoring
-
-Check bot status:
-```bash
-sudo supervisorctl status telegram_bot
-```
-
-Check logs:
-```bash
-tail -f /var/log/telegram_bot.log
-tail -f /var/log/django_web.log
-```
-
-Restart services:
-```bash
-sudo supervisorctl restart telegram_bot
-sudo supervisorctl restart django_web
-```
-
-## Backup
-
-Database backup:
-```bash
-pg_dump -h db.xxx.supabase.co -U postgres -d postgres > backup.sql
-```
-
-Restore:
-```bash
-psql -h db.xxx.supabase.co -U postgres -d postgres < backup.sql
-```
+Masalalar uchun:
+1. Render logs'ni tekshiring
+2. Environment variables'ni verify qilingu
+3. Database connection'ni test qilingu
