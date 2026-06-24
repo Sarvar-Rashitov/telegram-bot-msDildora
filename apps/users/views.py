@@ -12,8 +12,9 @@ from apps.support.models import SupportTicket
 def dashboard(request):
     today = timezone.now().date()
     
+    # Staff foydalanuvchilarni hisoblashdan o'chiramiz
     stats = {
-        'total_users': User.objects.count(),
+        'total_users': User.objects.filter(is_staff=False).count(),
         'active_subscriptions': Subscription.objects.filter(status='active').count(),
         'today_revenue': Payment.objects.filter(created_at__date=today, status='success').aggregate(Sum('amount'))['amount__sum'] or 0,
         'total_revenue': Payment.objects.filter(status='success').aggregate(Sum('amount'))['amount__sum'] or 0,
@@ -21,7 +22,7 @@ def dashboard(request):
         'today_payments': Payment.objects.filter(created_at__date=today, status='success').count(),
     }
     
-    recent_users = User.objects.order_by('-created_at')[:5]
+    recent_users = User.objects.filter(is_staff=False).order_by('-created_at')[:5]
     recent_payments = Payment.objects.select_related('user').order_by('-created_at')[:5]
     
     return render(request, 'dashboard/index.html', {
@@ -32,7 +33,8 @@ def dashboard(request):
 
 @login_required
 def user_list(request):
-    users = User.objects.all()
+    # Staff foydalanuvchilarni ko'rsatma
+    users = User.objects.filter(is_staff=False)
     
     # Search
     search = request.GET.get('search', '')
@@ -51,11 +53,22 @@ def user_list(request):
 @login_required
 def user_detail(request, pk):
     user = get_object_or_404(User, pk=pk)
+    
+    # Staff foydalanuvchi ko'rinmasin (o'z profilini ko'rish qoladi)
+    if user.is_staff and user.id != request.user.id:
+        messages.error(request, 'Ushbu foydalanuvchini ko\'ra olmaysiz')
+        return redirect('users:user_list')
+    
     return render(request, 'users/detail.html', {'user_obj': user})
 
 @login_required
 def user_edit(request, pk):
     user = get_object_or_404(User, pk=pk)
+    
+    # Staff foydalanuvchini tahrirlashga ruxsat bermaymiz (o'z profilini tahrirlash qoladi)
+    if user.is_staff and user.id != request.user.id:
+        messages.error(request, 'Ushbu foydalanuvchini tahrirlaya olmaysiz')
+        return redirect('users:user_list')
     
     if request.method == 'POST':
         user.username = request.POST.get('username', user.username)

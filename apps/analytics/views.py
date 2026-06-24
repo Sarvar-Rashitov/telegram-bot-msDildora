@@ -12,8 +12,9 @@ from .models import AuditLog
 def analytics_dashboard(request):
     today = timezone.now().date()
     
+    # Staff foydalanuvchilarni hisoblashdan o'chiramiz
     stats = {
-        'total_users': User.objects.count(),
+        'total_users': User.objects.filter(is_staff=False).count(),
         'active_subscriptions': Subscription.objects.filter(status='active').count(),
         'today_payments': Payment.objects.filter(created_at__date=today, status='success').count(),
         'today_revenue': Payment.objects.filter(created_at__date=today, status='success').aggregate(Sum('amount'))['amount__sum'] or 0,

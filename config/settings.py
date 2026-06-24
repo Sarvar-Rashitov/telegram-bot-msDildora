@@ -60,8 +60,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': BASE_DIR / config('DB_NAME', default='db.sqlite3'),
-        'CONN_MAX_AGE': 0,  # Async uchun database connection pooling o'chiriladi
+        'NAME': config('DB_NAME', default='db.sqlite3') if config('DB_ENGINE', default='django.db.backends.sqlite3') == 'django.db.backends.sqlite3' else config('DB_NAME'),
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default=''),
+        'PORT': config('DB_PORT', default='5432'),
+        'CONN_MAX_AGE': 0,
     }
 }
 
