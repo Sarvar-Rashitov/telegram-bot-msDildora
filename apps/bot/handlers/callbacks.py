@@ -2,9 +2,11 @@ from aiogram.types import CallbackQuery
 from asgiref.sync import sync_to_async
 from apps.subscriptions.models import Tariff, Subscription
 from apps.users.models import User
+from apps.channels.models import TelegramChannel
 from apps.payments.utils import create_payment
-from apps.bot.keyboards import payment_menu
+from apps.bot.keyboards import payment_menu, channel_invite_keyboard
 from django.db import close_old_connections
+from django.utils import timezone
 
 @sync_to_async
 def create_subscription_and_payment(telegram_id, tariff_id):
@@ -69,12 +71,25 @@ def check_user_payment(telegram_id):
         
         payment = subscription.payments.filter(status='success').first()
         
+        if payment:
+            # Obunani aktivlashtirish
+            subscription.status = 'active'
+            subscription.start_date = timezone.now()
+            subscription.end_date = timezone.now() + timezone.timedelta(days=subscription.tariff.duration_days)
+            subscription.save()
+        
         return {
             'found': True,
             'paid': payment is not None
         }
     except:
         return {'found': False}
+
+@sync_to_async
+def get_channel_invite_link():
+    close_old_connections()
+    channel = TelegramChannel.objects.filter(is_active=True).first()
+    return channel.invite_link if channel else None
 
 async def handle_check_payment(callback: CallbackQuery):
     """Check payment status"""
@@ -85,10 +100,20 @@ async def handle_check_payment(callback: CallbackQuery):
         return
     
     if result['paid']:
-        await callback.message.answer(
-            "✅ To'lov muvaffaqiyatli amalga oshirildi!\n"
-            "Kanalga kirish uchun quyidagi havola orqali kiring."
-        )
+        invite_link = await get_channel_invite_link()
+        
+        if invite_link:
+            await callback.message.answer(
+                "✅ To'lov muvaffaqiyatli amalga oshirildi!\n\n"
+                "📢 Quyidagi tugma orqali kanalga o'ting:",
+                reply_markup=channel_invite_keyboard(invite_link)
+            )
+        else:
+            await callback.message.answer(
+                "✅ To'lov muvaffaqiyatli amalga oshirildi!\n\n"
+                "Kanal havolasi tez orada yuboriladi."
+            )
+        await callback.answer()
     else:
         await callback.answer(
             "⏳ To'lov hali tasdiqlanmagan. Iltimos, biroz kuting.",

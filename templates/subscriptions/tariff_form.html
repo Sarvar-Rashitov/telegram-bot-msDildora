@@ -5,39 +5,52 @@
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">{% if tariff %}✏️ Tarif tahrirlash{% else %}➕ Yangi tarif{% endif %}</h1>
-    <a href="/subscriptions/tariffs/" class="btn btn-secondary">← Orqaga</a>
+    <a href="{% url 'subscriptions:tariff_list' %}" class="btn btn-secondary">← Orqaga</a>
 </div>
 
-<div class="card">
+<div class="card" style="max-width: 600px;">
     <form method="post">
         {% csrf_token %}
         
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Tarif nomi</label>
-        <input type="text" name="name" value="{{ tariff.name }}" required 
-               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
-        
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Tavsif</label>
-        <textarea name="description" rows="3" 
-                  style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px; resize: vertical;">{{ tariff.description }}</textarea>
-        
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Narxi (so'm)</label>
-        <input type="number" name="price" value="{{ tariff.price }}" step="0.01" required
-               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
-        
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Muddati (kunlarda)</label>
-        <input type="number" name="duration_days" value="{{ tariff.duration_days }}" required
-               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
-        
-        <div style="margin-bottom: 16px;">
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" name="is_active" {% if tariff.is_active or not tariff %}checked{% endif %}>
-                <span>Faol</span>
-            </label>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Tarif nomi *</label>
+            <input type="text" name="name" value="{{ tariff.name }}" required 
+                   style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+            <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Tarif katalogida ko'rsatiladi</div>
         </div>
         
-        <div style="display: flex; gap: 10px; margin-top: 24px;">
-            <button type="submit" class="btn">Saqlash</button>
-            <a href="/subscriptions/tariffs/" class="btn btn-secondary">Bekor qilish</a>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Tavsif</label>
+            <textarea name="description" rows="3" 
+                      style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; resize: vertical;">{{ tariff.description }}</textarea>
+            <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Tarif haqida qisqacha ma'lumot</div>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Narxi (so'm) *</label>
+            <input type="number" name="price" value="{{ tariff.price }}" step="0.01" required
+                   style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+            <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Obuna narxi so'mlarda</div>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Muddati (kunlarda) *</label>
+            <input type="number" name="duration_days" value="{{ tariff.duration_days }}" required
+                   style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+            <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Obuna muddati kun hisobida</div>
+        </div>
+        
+        <div style="margin-bottom: 24px; padding: 12px; background: #f9fafb; border-radius: 6px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
+                <input type="checkbox" name="is_active" {% if tariff.is_active or not tariff %}checked{% endif %} style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="font-weight: 500;">Faol</span>
+            </label>
+            <div style="font-size: 12px; color: #6b7280; margin-top: 4px; margin-left: 26px;">Faol bo'lmagan tariflar katalogda ko'rinmaydi</div>
+        </div>
+        
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+            <button type="submit" class="btn">💾 Saqlash</button>
+            <a href="{% url 'subscriptions:tariff_list' %}" class="btn btn-secondary">Bekor qilish</a>
         </div>
     </form>
 </div>

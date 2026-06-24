@@ -5,16 +5,62 @@
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">⚙️ Sozlamani Tahrirlash</h1>
+    <p class="page-subtitle">{{ setting.key }}</p>
 </div>
 
-<div class="card" style="max-width: 600px; margin: 0 auto;">
+<div class="card" style="max-width: 800px; margin: 0 auto;">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <div style="margin-top: 20px;">
-            <button type="submit" class="btn btn-primary">Saqlash</button>
-            <a href="{% url 'bot:settings_list' %}" class="btn btn-secondary">Bekor qilish</a>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Kalit</label>
+            {{ form.key }}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Qiymat</label>
+            {{ form.value }}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Fayl</label>
+            {{ form.file }}
+            {% if setting.file %}
+            <p style="margin-top: 8px; font-size: 14px; color: #6b7280;">
+                📎 Hozirgi fayl: <a href="{{ setting.file.url }}" target="_blank" style="color: #0066cc;">Ko'rish</a>
+            </p>
+            {% endif %}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Tavsif</label>
+            {{ form.description }}
+        </div>
+        
+        <div style="margin-top: 30px; display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-primary">💾 Saqlash</button>
+            <a href="{% url 'bot:settings_list' %}" class="btn btn-secondary">❌ Bekor qilish</a>
         </div>
     </form>
 </div>
+
+<style>
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+.form-control:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+textarea.form-control {
+    resize: vertical;
+    font-family: inherit;
+}
+</style>
 {% endblock %}

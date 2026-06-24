@@ -6,45 +6,94 @@
 <div class="page-header">
     <h1 class="page-title">🎫 Promo kodlar</h1>
     <div style="display: flex; gap: 10px;">
-        <a href="/subscriptions/promo/create/" class="btn">➕ Yangi promo</a>
-        <a href="/subscriptions/tariffs/" class="btn btn-secondary">← Orqaga</a>
+        <a href="{% url 'subscriptions:promo_create' %}" class="btn">➕ Yangi promo</a>
+        <a href="{% url 'subscriptions:tariff_list' %}" class="btn btn-secondary">← Orqaga</a>
     </div>
 </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Kod</th>
-            <th>Chegirma %</th>
-            <th>Chegirma summa</th>
-            <th>Limit</th>
-            <th>Ishlatildi</th>
-            <th>Status</th>
-            <th>Amallar</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for promo in promos %}
-        <tr>
-            <td><strong>{{ promo.code }}</strong></td>
-            <td>{{ promo.discount_percent }}%</td>
-            <td>{{ promo.discount_amount|floatformat:0 }} so'm</td>
-            <td>{{ promo.usage_limit }}</td>
-            <td>{{ promo.used_count }}</td>
-            <td>
-                {% if promo.is_active %}
-                <span class="badge badge-success">Faol</span>
-                {% else %}
-                <span class="badge badge-secondary">Nofaol</span>
-                {% endif %}
-            </td>
-            <td>
-                <a href="/subscriptions/promo/{{ promo.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" style="color: #dc3545; text-decoration: none;">O'chirish</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="7" style="text-align: center; padding: 40px;">Promo kodlar topilmadi</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="card">
+    {% if promos %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 120px;">Kod</th>
+                <th style="text-align: center;">Chegirma %</th>
+                <th style="text-align: right;">Chegirma (so'm)</th>
+                <th style="text-align: center;">Limit</th>
+                <th style="text-align: center;">Ishlatildi</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Amallar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for promo in promos %}
+            <tr>
+                <td>
+                    <strong style="font-family: monospace; font-size: 14px; color: #1a1a1a;">{{ promo.code }}</strong>
+                    <br><span style="font-size: 12px; color: #6b7280;">ID: #{{ promo.id }}</span>
+                </td>
+                <td style="text-align: center; font-weight: 500;">{{ promo.discount_percent }}%</td>
+                <td style="text-align: right; color: #10b981; font-weight: 600;">{{ promo.discount_amount|floatformat:0 }} so'm</td>
+                <td style="text-align: center; font-size: 13px;">{{ promo.usage_limit }}</td>
+                <td style="text-align: center;">
+                    <span style="display: inline-block; background: #f3f4f6; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                        {{ promo.used_count_actual }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    {% if promo.is_active %}
+                    <span class="badge badge-success">✓ Faol</span>
+                    {% else %}
+                    <span class="badge badge-secondary">Nofaol</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center; font-size: 13px;">
+                    <form method="post" action="{% url 'subscriptions:promo_toggle' promo.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-sm" style="background: {% if promo.is_active %}#fef3c7{% else %}#d1fae5{% endif %}; color: {% if promo.is_active %}#92400e{% else %}#065f46{% endif %};">
+                            {% if promo.is_active %}🔴{% else %}🟢{% endif %}
+                        </button>
+                    </form>
+                    <a href="{% url 'subscriptions:promo_delete' promo.pk %}" class="btn-sm" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" style="background: #fee2e2; color: #991b1b;">🗑️</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
+        <div style="font-size: 48px; margin-bottom: 15px;">🎫</div>
+        <p style="font-size: 16px;">Promo kodlar topilmadi</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-secondary { background: #f3f4f6; color: #6b7280; }
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin: 0 2px;
+}
+.btn-sm:hover {
+    background: #e5e7eb;
+}
+</style>
 {% endblock %}

@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Obuna #{{ subscription.id }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">📅 Obuna #{{ subscription.id }}</h1>
+    <a href="{% url 'subscriptions:subscription_list' %}" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+    <!-- Main Info -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px;">Obuna Ma'lumotlari</h3>
+        
+        <table style="box-shadow: none;">
+            <tr>
+                <td style="border: none; font-weight: 600; width: 180px;">Status</td>
+                <td style="border: none;">
+                    {% if subscription.status == 'active' %}
+                    <span class="badge badge-success">✓ Aktiv</span>
+                    {% elif subscription.status == 'pending' %}
+                    <span class="badge badge-warning">⏳ Kutilmoqda</span>
+                    {% elif subscription.status == 'expired' %}
+                    <span class="badge badge-secondary">⏰ Tugagan</span>
+                    {% elif subscription.status == 'cancelled' %}
+                    <span class="badge badge-danger">✗ Bekor</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Tarif</td>
+                <td><strong>{{ subscription.tariff.name }}</strong><br><span style="font-size: 13px; color: #6b7280;">{{ subscription.tariff.price }} so'm</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Muddat</td>
+                <td>{{ subscription.tariff.duration_days }} kun</td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Boshlangan</td>
+                <td>{% if subscription.start_date %}{{ subscription.start_date|date:"d.m.Y H:i" }}{% else %}<span style="color: #9ca3af;">—</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Tugaydi</td>
+                <td>{% if subscription.end_date %}<strong>{{ subscription.end_date|date:"d.m.Y" }}</strong>{% else %}<span style="color: #9ca3af;">—</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Yaratilgan</td>
+                <td>{{ subscription.created_at|date:"d.m.Y H:i" }}</td>
+            </tr>
+        </table>
+        
+        <!-- Actions -->
+        <div style="margin-top: 20px; display: flex; gap: 10px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+            {% if subscription.status == 'pending' %}
+            <a href="{% url 'subscriptions:subscription_activate' subscription.pk %}" class="btn btn-primary">✓ Aktivlashtirish</a>
+            {% endif %}
+            {% if subscription.status != 'cancelled' %}
+            <a href="{% url 'subscriptions:subscription_cancel' subscription.pk %}" class="btn btn-danger" 
+               onclick="return confirm('Rostdan ham bekor qilmoqchimisiz?')">✗ Bekor qilish</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- User Card -->
+    <div class="card">
+        <h3 style="margin-bottom: 15px;">👤 Foydalanuvchi</h3>
+        <p style="margin-bottom: 8px;"><strong>{{ subscription.user.username }}</strong></p>
+        {% if subscription.user.first_name %}
+        <p style="margin-bottom: 8px; font-size: 13px; color: #6b7280;">{{ subscription.user.first_name }} {{ subscription.user.last_name }}</p>
+        {% endif %}
+        {% if subscription.user.phone %}
+        <p style="margin-bottom: 8px; font-size: 13px;">📱 {{ subscription.user.phone }}</p>
+        {% endif %}
+        <p style="margin-bottom: 15px; font-size: 13px; color: #6b7280;">ID: {{ subscription.user.telegram_id }}</p>
+        <a href="{% url 'users:detail' subscription.user.id %}" class="btn btn-primary" style="width: 100%; text-align: center;">Ko'rish</a>
+    </div>
+</div>
+
+<!-- To'lovlar -->
+{% if payments %}
+<div class="card" style="margin-top: 20px;">
+    <h3 style="margin-bottom: 20px;">💳 To'lovlar</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th style="text-align: right;">Summa</th>
+                <th>Status</th>
+                <th>Transaction ID</th>
+                <th style="text-align: right;">Sana</th>
+                <th style="text-align: center;">Amallar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td><strong>{{ payment.id }}</strong></td>
+                <td style="text-align: right; font-weight: 600;">{{ payment.amount }} so'm</td>
+                <td>
+                    {% if payment.status == 'success' %}
+                    <span class="badge badge-success">✓ Muvaffaqiyatli</span>
+                    {% elif payment.status == 'pending' %}
+                    <span class="badge badge-warning">⏳ Kutilmoqda</span>
+                    {% else %}
+                    <span class="badge badge-danger">✗ Xato</span>
+                    {% endif %}
+                </td>
+                <td style="font-family: monospace; font-size: 12px;">{{ payment.transaction_id|truncatechars:20 }}</td>
+                <td style="text-align: right; font-size: 13px;">{{ payment.created_at|date:"d.m H:i" }}</td>
+                <td style="text-align: center;">
+                    <a href="{% url 'payments:detail' payment.pk %}" class="btn-sm">👁️</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+}
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-secondary { background: #f3f4f6; color: #6b7280; }
+.btn {
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+.btn-primary {
+    background: #0066cc;
+    color: white;
+}
+.btn-primary:hover {
+    background: #0052a3;
+}
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+.btn-danger:hover {
+    background: #b91c1c;
+}
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+    background: #f3f4f6;
+    color: #374151;
+}
+.btn-sm:hover {
+    background: #e5e7eb;
+}
+</style>
+{% endblock %}

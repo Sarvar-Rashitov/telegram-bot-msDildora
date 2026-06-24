@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
-from apps.broadcasts.tasks import start_broadcast
+from apps.bot.bot import bot
+from apps.bot.handlers.broadcast import send_broadcast
+import asyncio
 
 class Command(BaseCommand):
     help = 'Send broadcast message'
@@ -9,6 +11,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         broadcast_id = options['broadcast_id']
-        self.stdout.write(f'Sending broadcast {broadcast_id}...')
-        start_broadcast(broadcast_id)
-        self.stdout.write(self.style.SUCCESS('Done!'))
+        self.stdout.write(f'Broadcast yuborilmoqda: {broadcast_id}')
+        
+        asyncio.run(send_broadcast(bot, broadcast_id))
+        
+        self.stdout.write(self.style.SUCCESS('✅ Broadcast yuborildi'))

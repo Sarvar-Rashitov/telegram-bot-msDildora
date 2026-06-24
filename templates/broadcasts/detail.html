@@ -5,7 +5,13 @@
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">📨 {{ broadcast.title }}</h1>
-    <a href="/broadcasts/" class="btn btn-secondary">← Orqaga</a>
+    <div>
+        {% if broadcast.status == 'draft' %}
+        <a href="{% url 'broadcasts:send' broadcast.pk %}" class="btn btn-primary" 
+           onclick="return confirm('Xabarni yuborishni boshlaysizmi?')">📤 Yuborish</a>
+        {% endif %}
+        <a href="/broadcasts/" class="btn btn-secondary">← Orqaga</a>
+    </div>
 </div>
 
 <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">

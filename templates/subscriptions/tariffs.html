@@ -5,46 +5,93 @@
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">💳 Tariflar</h1>
-    <a href="/subscriptions/tariffs/create/" class="btn">➕ Yangi tarif</a>
+    <a href="{% url 'subscriptions:tariff_create' %}" class="btn">➕ Yangi tarif</a>
 </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nomi</th>
-            <th>Narxi</th>
-            <th>Muddati</th>
-            <th>Status</th>
-            <th>Amallar</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for tariff in tariffs %}
-        <tr>
-            <td>{{ tariff.id }}</td>
-            <td>{{ tariff.name }}</td>
-            <td>{{ tariff.price|floatformat:0 }} so'm</td>
-            <td>{{ tariff.duration_days }} kun</td>
-            <td>
-                {% if tariff.is_active %}
-                <span class="badge badge-success">Faol</span>
-                {% else %}
-                <span class="badge badge-secondary">Nofaol</span>
-                {% endif %}
-            </td>
-            <td>
-                <a href="/subscriptions/tariffs/{{ tariff.id }}/edit/" style="color: #0066cc; text-decoration: none; margin-right: 10px;">Tahrirlash</a>
-                <a href="/subscriptions/tariffs/{{ tariff.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" style="color: #dc3545; text-decoration: none;">O'chirish</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6" style="text-align: center; padding: 40px;">Tariflar topilmadi</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<div style="margin-top: 30px;">
-    <a href="/subscriptions/promo/" class="btn btn-secondary">🎫 Promo kodlar</a>
+<div class="card">
+    {% if tariffs %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 60px;">ID</th>
+                <th>Nomi</th>
+                <th style="text-align: right;">Narxi</th>
+                <th style="text-align: center;">Muddati</th>
+                <th style="text-align: center;">Obunalar</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Amallar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tariff in tariffs %}
+            <tr>
+                <td><strong>#{{ tariff.id }}</strong></td>
+                <td>
+                    <span style="font-weight: 600;">{{ tariff.name }}</span>
+                    {% if tariff.description %}
+                    <br><span style="font-size: 13px; color: #6b7280;">{{ tariff.description|truncatewords:5 }}</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: right; font-weight: 600; color: #10b981;">{{ tariff.price|floatformat:0 }} so'm</td>
+                <td style="text-align: center; font-size: 13px; color: #6b7280;">{{ tariff.duration_days }} kun</td>
+                <td style="text-align: center;">
+                    <span style="display: inline-block; background: #f3f4f6; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                        {{ tariff.subscription_count }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    {% if tariff.is_active %}
+                    <span class="badge badge-success">✓ Faol</span>
+                    {% else %}
+                    <span class="badge badge-secondary">Nofaol</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center; font-size: 13px;">
+                    <a href="{% url 'subscriptions:tariff_edit' tariff.pk %}" class="btn-sm">✏️</a>
+                    <a href="{% url 'subscriptions:tariff_delete' tariff.pk %}" class="btn-sm" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" style="background: #fee2e2; color: #991b1b;">🗑️</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
+        <div style="font-size: 48px; margin-bottom: 15px;">💳</div>
+        <p style="font-size: 16px;">Tariflar topilmadi</p>
+    </div>
+    {% endif %}
 </div>
+
+<div style="margin-top: 30px; display: flex; gap: 10px;">
+    <a href="{% url 'subscriptions:promo_list' %}" class="btn btn-secondary">🎫 Promo kodlar</a>
+</div>
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-secondary { background: #f3f4f6; color: #6b7280; }
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin: 0 2px;
+}
+.btn-sm:hover {
+    background: #e5e7eb;
+}
+</style>
 {% endblock %}

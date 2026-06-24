@@ -7,3 +7,8 @@ class RegistrationStates(StatesGroup):
     waiting_for_phone = State()
     waiting_for_age = State()
     waiting_for_occupation = State()
+
+class SupportTicketStates(StatesGroup):
+    """Murojaat qoldirish jarayoni"""
+    waiting_for_subject = State()
+    waiting_for_message = State()

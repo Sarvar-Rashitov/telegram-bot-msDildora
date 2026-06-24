@@ -5,127 +5,181 @@
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">🤖 Bot Sozlamalari</h1>
-    <p class="page-subtitle">Bot kontentini boshqarish</p>
+    <p class="page-subtitle">Bot kontentini boshqarish va sozlash</p>
 </div>
 
 <!-- Bot Settings -->
 <div class="card" style="margin-bottom: 20px;">
-    <h3>⚙️ Bot Sozlamalari</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0;">⚙️ Bot Sozlamalari</h3>
+    </div>
+    
+    {% if settings %}
     <table>
         <thead>
             <tr>
                 <th>Kalit</th>
                 <th>Tavsif</th>
+                <th>Fayl</th>
                 <th>Oxirgi o'zgarish</th>
-                <th>Amallar</th>
+                <th style="text-align: center;">Amallar</th>
             </tr>
         </thead>
         <tbody>
             {% for setting in settings %}
             <tr>
-                <td>{{ setting.key }}</td>
-                <td>{{ setting.description|truncatewords:10 }}</td>
-                <td>{{ setting.updated_at|date:"d.m.Y H:i" }}</td>
+                <td><code style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px;">{{ setting.key }}</code></td>
+                <td>{{ setting.description|truncatewords:15 }}</td>
                 <td>
-                    <a href="{% url 'bot:settings_edit' setting.pk %}" class="btn-sm">Tahrirlash</a>
+                    {% if setting.file %}
+                    <a href="{{ setting.file.url }}" target="_blank" class="btn-sm" style="background: #10b981; color: white;">📎 Ko'rish</a>
+                    {% else %}
+                    <span style="color: #9ca3af;">Fayl yo'q</span>
+                    {% endif %}
                 </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" style="text-align: center;">Sozlamalar yo'q</td>
+                <td style="font-size: 13px; color: #6b7280;">{{ setting.updated_at|date:"d.m.Y H:i" }}</td>
+                <td style="text-align: center;">
+                    <a href="{% url 'bot:settings_edit' setting.pk %}" class="btn-sm">✏️ Tahrirlash</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: #9ca3af;">
+        <p style="font-size: 48px; margin-bottom: 10px;">⚙️</p>
+        <p>Sozlamalar yo'q</p>
+    </div>
+    {% endif %}
 </div>
 
 <!-- Contacts -->
 <div class="card" style="margin-bottom: 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h3>📞 Yordam Kontaktlari</h3>
+        <h3 style="margin: 0;">📞 Yordam Kontaktlari</h3>
         <a href="{% url 'bot:contact_create' %}" class="btn btn-primary">+ Kontakt qo'shish</a>
     </div>
+    
+    {% if contacts %}
     <table>
         <thead>
             <tr>
                 <th>Sarlavha</th>
                 <th>Tur</th>
                 <th>Qiymat</th>
-                <th>Tartib</th>
-                <th>Status</th>
-                <th>Amallar</th>
+                <th style="text-align: center;">Tartib</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Amallar</th>
             </tr>
         </thead>
         <tbody>
             {% for contact in contacts %}
             <tr>
-                <td>{{ contact.title }}</td>
-                <td>{{ contact.get_contact_type_display }}</td>
-                <td>{{ contact.value }}</td>
-                <td>{{ contact.order }}</td>
-                <td>
+                <td style="font-weight: 600;">{{ contact.title }}</td>
+                <td><span class="badge badge-info">{{ contact.get_contact_type_display }}</span></td>
+                <td style="font-family: monospace; font-size: 13px;">{{ contact.value }}</td>
+                <td style="text-align: center;">{{ contact.order }}</td>
+                <td style="text-align: center;">
                     {% if contact.is_active %}
                     <span class="badge badge-success">Faol</span>
                     {% else %}
                     <span class="badge badge-secondary">Nofaol</span>
                     {% endif %}
                 </td>
-                <td>
-                    <a href="{% url 'bot:contact_edit' contact.pk %}" class="btn-sm">Tahrirlash</a>
+                <td style="text-align: center;">
+                    <a href="{% url 'bot:contact_edit' contact.pk %}" class="btn-sm">✏️</a>
                     <a href="{% url 'bot:contact_delete' contact.pk %}" class="btn-sm btn-danger" 
-                       onclick="return confirm('O\'chirmoqchimisiz?')">O'chirish</a>
+                       onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')">🗑️</a>
                 </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" style="text-align: center;">Kontaktlar yo'q</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: #9ca3af;">
+        <p style="font-size: 48px; margin-bottom: 10px;">📞</p>
+        <p>Kontaktlar yo'q. Birinchi kontaktni qo'shing!</p>
+    </div>
+    {% endif %}
 </div>
 
 <!-- Bot Info -->
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h3>ℹ️ Bot Ma'lumotlari</h3>
+        <h3 style="margin: 0;">ℹ️ Bot Ma'lumotlari</h3>
         <a href="{% url 'bot:info_create' %}" class="btn btn-primary">+ Ma'lumot qo'shish</a>
     </div>
+    
+    {% if infos %}
     <table>
         <thead>
             <tr>
                 <th>Sarlavha</th>
                 <th>Mazmun</th>
-                <th>Tartib</th>
-                <th>Status</th>
-                <th>Amallar</th>
+                <th style="text-align: center;">Rasm</th>
+                <th style="text-align: center;">Tartib</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Amallar</th>
             </tr>
         </thead>
         <tbody>
             {% for info in infos %}
             <tr>
-                <td>{{ info.title }}</td>
-                <td>{{ info.content|truncatewords:15 }}</td>
-                <td>{{ info.order }}</td>
-                <td>
+                <td style="font-weight: 600;">{{ info.title }}</td>
+                <td style="color: #6b7280;">{{ info.content|truncatewords:20 }}</td>
+                <td style="text-align: center;">
+                    {% if info.image %}
+                    <span style="color: #10b981;">✓ Bor</span>
+                    {% else %}
+                    <span style="color: #9ca3af;">Yo'q</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">{{ info.order }}</td>
+                <td style="text-align: center;">
                     {% if info.is_active %}
                     <span class="badge badge-success">Faol</span>
                     {% else %}
                     <span class="badge badge-secondary">Nofaol</span>
                     {% endif %}
                 </td>
-                <td>
-                    <a href="{% url 'bot:info_edit' info.pk %}" class="btn-sm">Tahrirlash</a>
+                <td style="text-align: center;">
+                    <a href="{% url 'bot:info_edit' info.pk %}" class="btn-sm">✏️</a>
                     <a href="{% url 'bot:info_delete' info.pk %}" class="btn-sm btn-danger" 
-                       onclick="return confirm('O\'chirmoqchimisiz?')">O'chirish</a>
+                       onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')">🗑️</a>
                 </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" style="text-align: center;">Ma'lumotlar yo'q</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: #9ca3af;">
+        <p style="font-size: 48px; margin-bottom: 10px;">ℹ️</p>
+        <p>Ma'lumotlar yo'q. Birinchi ma'lumotni qo'shing!</p>
+    </div>
+    {% endif %}
 </div>
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.badge-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+.badge-secondary {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+.badge-info {
+    background: #dbeafe;
+    color: #1e40af;
+}
+</style>
 {% endblock %}

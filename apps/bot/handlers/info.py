@@ -1,6 +1,6 @@
 from aiogram.types import Message, FSInputFile
 from asgiref.sync import sync_to_async
-from apps.bot.models import BotSettings, BotInfo, ContactInfo
+from apps.bot.models import BotSettings, BotInfo
 from django.db import close_old_connections
 import os
 
@@ -17,12 +17,6 @@ def get_bot_info():
     close_old_connections()
     info_items = BotInfo.objects.filter(is_active=True).order_by('order')
     return list(info_items)
-
-@sync_to_async
-def get_contact_info():
-    close_old_connections()
-    contacts = ContactInfo.objects.filter(is_active=True).order_by('order')
-    return list(contacts)
 
 async def cmd_license(message: Message):
     """Litsenziya PDF faylni yuborish"""
@@ -66,29 +60,3 @@ async def cmd_info(message: Message):
                 await message.answer(text)
         else:
             await message.answer(text)
-
-async def cmd_help(message: Message):
-    """Yordam - kontaktlar"""
-    contacts = await get_contact_info()
-    
-    if not contacts:
-        await message.answer(
-            "📞 Yordam\n\n"
-            "Kontakt ma'lumotlari hozircha qo'shilmagan."
-        )
-        return
-    
-    text = "📞 Yordam bo'limi\n\n"
-    text += "Biz bilan bog'lanish:\n\n"
-    
-    for contact in contacts:
-        icon = {
-            'phone': '📱',
-            'telegram': '✈️',
-            'email': '📧',
-            'other': '🔗'
-        }.get(contact.contact_type, '📌')
-        
-        text += f"{icon} {contact.title}: {contact.value}\n"
-    
-    await message.answer(text)

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}To'lov #{{ payment.id }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">💳 To'lov #{{ payment.id }}</h1>
+    <a href="{% url 'payments:list' %}" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+    <!-- Main Info -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px;">To'lov Ma'lumotlari</h3>
+        
+        <table style="box-shadow: none;">
+            <tr>
+                <td style="border: none; font-weight: 600; width: 200px;">Status</td>
+                <td style="border: none;">
+                    {% if payment.status == 'success' %}
+                    <span class="badge badge-success">Muvaffaqiyatli</span>
+                    {% elif payment.status == 'pending' %}
+                    <span class="badge badge-warning">Kutilmoqda</span>
+                    {% elif payment.status == 'failed' %}
+                    <span class="badge badge-danger">Xato</span>
+                    {% else %}
+                    <span class="badge badge-secondary">{{ payment.get_status_display }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Summa</td>
+                <td style="font-size: 20px; font-weight: 600; color: #10b981;">{{ payment.amount }} so'm</td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Transaction ID</td>
+                <td><code>{{ payment.transaction_id }}</code></td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">To'lov URL</td>
+                <td>
+                    {% if payment.payment_url %}
+                    <a href="{{ payment.payment_url }}" target="_blank" style="color: #0066cc;">Ko'rish</a>
+                    {% else %}
+                    <span style="color: #9ca3af;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Yaratilgan</td>
+                <td>{{ payment.created_at|date:"d.m.Y H:i" }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight: 600;">Yangilangan</td>
+                <td>{{ payment.updated_at|date:"d.m.Y H:i" }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <!-- User & Subscription Info -->
+    <div>
+        <!-- User Card -->
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px;">👤 Foydalanuvchi</h3>
+            <p style="margin-bottom: 8px;"><strong>Username:</strong> {{ payment.user.username }}</p>
+            <p style="margin-bottom: 8px;"><strong>ID:</strong> {{ payment.user.id }}</p>
+            {% if payment.user.phone %}
+            <p style="margin-bottom: 8px;"><strong>Telefon:</strong> {{ payment.user.phone }}</p>
+            {% endif %}
+            <a href="{% url 'users:detail' payment.user.id %}" class="btn-sm" style="margin-top: 10px; display: inline-block;">Ko'rish</a>
+        </div>
+        
+        <!-- Subscription Card -->
+        {% if payment.subscription %}
+        <div class="card">
+            <h3 style="margin-bottom: 15px;">📅 Obuna</h3>
+            <p style="margin-bottom: 8px;"><strong>Tarif:</strong> {{ payment.subscription.tariff.name }}</p>
+            <p style="margin-bottom: 8px;"><strong>Status:</strong> 
+                <span class="badge {% if payment.subscription.status == 'active' %}badge-success{% else %}badge-secondary{% endif %}">
+                    {{ payment.subscription.get_status_display }}
+                </span>
+            </p>
+            <p style="margin-bottom: 8px;"><strong>Muddat:</strong> {{ payment.subscription.tariff.duration_days }} kun</p>
+            <a href="{% url 'subscriptions:subscription_detail' payment.subscription.id %}" class="btn-sm" style="margin-top: 10px; display: inline-block;">Ko'rish</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-secondary { background: #f3f4f6; color: #6b7280; }
+code {
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: monospace;
+}
+</style>
+{% endblock %}
