@@ -13,6 +13,7 @@ urlpatterns = [
     path('support/', include('apps.support.urls')),
     path('analytics/', include('apps.analytics.urls')),
     path('api/', include('apps.api.urls')),
+    path('bot/', include('apps.bot.urls')),
 ]
 
 if settings.DEBUG:

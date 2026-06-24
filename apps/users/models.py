@@ -3,12 +3,16 @@ from django.db import models
 
 class User(AbstractUser):
     telegram_id = models.BigIntegerField(unique=True, null=True)
+    telegram_username = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    occupation = models.CharField(max_length=255, blank=True)
     language = models.CharField(max_length=2, default='uz', choices=[('uz', 'O\'zbek'), ('ru', 'Русский')])
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     referral_code = models.CharField(max_length=20, unique=True, null=True)
     referred_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     is_blocked = models.BooleanField(default=False)
+    is_registered = models.BooleanField(default=False)  # To'liq ro'yxatdan o'tgan
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

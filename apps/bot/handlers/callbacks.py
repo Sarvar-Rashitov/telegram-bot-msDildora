@@ -4,9 +4,11 @@ from apps.subscriptions.models import Tariff, Subscription
 from apps.users.models import User
 from apps.payments.utils import create_payment
 from apps.bot.keyboards import payment_menu
+from django.db import close_old_connections
 
 @sync_to_async
 def create_subscription_and_payment(telegram_id, tariff_id):
+    close_old_connections()
     try:
         tariff = Tariff.objects.get(id=tariff_id, is_active=True)
         user = User.objects.get(telegram_id=telegram_id)
@@ -54,6 +56,7 @@ async def handle_tariff_callback(callback: CallbackQuery):
 
 @sync_to_async
 def check_user_payment(telegram_id):
+    close_old_connections()
     try:
         user = User.objects.get(telegram_id=telegram_id)
         subscription = Subscription.objects.filter(

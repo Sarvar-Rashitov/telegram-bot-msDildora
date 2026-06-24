@@ -1,10 +1,32 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
-def main_menu():
+def main_menu(is_registered=False):
+    """Asosiy menyu - registratsiya holatiga qarab"""
+    if is_registered:
+        keyboard = [
+            [KeyboardButton(text='👤 Profil'), KeyboardButton(text='💳 Obuna bo\'lish')],
+            [KeyboardButton(text='📄 Litsenziya'), KeyboardButton(text='ℹ️ Ma\'lumot')],
+            [KeyboardButton(text='📞 Yordam')],
+        ]
+    else:
+        keyboard = [
+            [KeyboardButton(text='📝 Ro\'yxatdan o\'tish')],
+            [KeyboardButton(text='📄 Litsenziya'), KeyboardButton(text='ℹ️ Ma\'lumot')],
+            [KeyboardButton(text='📞 Yordam')],
+        ]
+    return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
+
+def phone_request_keyboard():
+    """Telefon raqam so'rash"""
     keyboard = [
-        [KeyboardButton(text='👤 Profil'), KeyboardButton(text='💳 Obuna bo\'lish')],
-        [KeyboardButton(text='📞 Yordam'), KeyboardButton(text='ℹ️ Ma\'lumot')],
+        [KeyboardButton(text='📱 Telefon raqamni yuborish', request_contact=True)],
+        [KeyboardButton(text='❌ Bekor qilish')],
     ]
+    return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True, one_time_keyboard=True)
+
+def cancel_keyboard():
+    """Bekor qilish tugmasi"""
+    keyboard = [[KeyboardButton(text='❌ Bekor qilish')]]
     return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
 
 def tariff_menu(tariffs):

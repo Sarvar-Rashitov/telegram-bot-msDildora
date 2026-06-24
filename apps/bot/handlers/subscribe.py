@@ -2,9 +2,11 @@ from aiogram.types import Message
 from asgiref.sync import sync_to_async
 from apps.subscriptions.models import Tariff
 from apps.bot.keyboards import tariff_menu
+from django.db import close_old_connections
 
 @sync_to_async
 def get_active_tariffs():
+    close_old_connections()
     return list(Tariff.objects.filter(is_active=True))
 
 async def cmd_subscribe(message: Message):

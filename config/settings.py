@@ -61,6 +61,7 @@ DATABASES = {
     'default': {
         'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
         'NAME': BASE_DIR / config('DB_NAME', default='db.sqlite3'),
+        'CONN_MAX_AGE': 0,  # Async uchun database connection pooling o'chiriladi
     }
 }
 
