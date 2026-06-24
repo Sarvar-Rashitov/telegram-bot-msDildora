@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kirish - Telegram Subscription</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -72,20 +73,20 @@
 </head>
 <body>
     <div class="login-card">
-        <div class="login-logo">📊 Telegram Subscription</div>
+        <div class="login-logo"><i class="bi bi-graph-up"></i> Telegram Subscription</div>
 
         {% if form.errors %}
-        <div class="errors">Foydalanuvchi nomi yoki parol noto'g'ri.</div>
+        <div class="errors"><i class="bi bi-exclamation-circle"></i> Foydalanuvchi nomi yoki parol noto'g'ri.</div>
         {% endif %}
 
         <form method="post">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}">
-            <label for="id_username">Foydalanuvchi nomi</label>
+            <label for="id_username"><i class="bi bi-person"></i> Foydalanuvchi nomi</label>
             <input type="text" name="username" id="id_username" autofocus required>
-            <label for="id_password">Parol</label>
+            <label for="id_password"><i class="bi bi-lock"></i> Parol</label>
             <input type="password" name="password" id="id_password" required>
-            <button type="submit" class="btn">Kirish</button>
+            <button type="submit" class="btn"><i class="bi bi-door-open"></i> Kirish</button>
         </form>
     </div>
 </body>

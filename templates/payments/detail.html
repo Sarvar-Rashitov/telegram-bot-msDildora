@@ -3,9 +3,11 @@
 {% block title %}To'lov #{{ payment.id }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
 <div class="page-header">
-    <h1 class="page-title">💳 To'lov #{{ payment.id }}</h1>
-    <a href="{% url 'payments:list' %}" class="btn btn-secondary">← Orqaga</a>
+    <h1 class="page-title"><i class="bi bi-credit-card"></i> To'lov #{{ payment.id }}</h1>
+    <a href="{% url 'payments:list' %}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Orqaga</a>
 </div>
 
 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
@@ -18,11 +20,11 @@
                 <td style="border: none; font-weight: 600; width: 200px;">Status</td>
                 <td style="border: none;">
                     {% if payment.status == 'success' %}
-                    <span class="badge badge-success">Muvaffaqiyatli</span>
+                    <span class="badge badge-success"><i class="bi bi-check-circle"></i> Muvaffaqiyatli</span>
                     {% elif payment.status == 'pending' %}
-                    <span class="badge badge-warning">Kutilmoqda</span>
+                    <span class="badge badge-warning"><i class="bi bi-clock"></i> Kutilmoqda</span>
                     {% elif payment.status == 'failed' %}
-                    <span class="badge badge-danger">Xato</span>
+                    <span class="badge badge-danger"><i class="bi bi-x-circle"></i> Xato</span>
                     {% else %}
                     <span class="badge badge-secondary">{{ payment.get_status_display }}</span>
                     {% endif %}
@@ -40,7 +42,7 @@
                 <td style="font-weight: 600;">To'lov URL</td>
                 <td>
                     {% if payment.payment_url %}
-                    <a href="{{ payment.payment_url }}" target="_blank" style="color: #0066cc;">Ko'rish</a>
+                    <a href="{{ payment.payment_url }}" target="_blank" style="color: #0066cc;"><i class="bi bi-link-45deg"></i> Ko'rish</a>
                     {% else %}
                     <span style="color: #9ca3af;">—</span>
                     {% endif %}
@@ -61,19 +63,19 @@
     <div>
         <!-- User Card -->
         <div class="card" style="margin-bottom: 20px;">
-            <h3 style="margin-bottom: 15px;">👤 Foydalanuvchi</h3>
+            <h3 style="margin-bottom: 15px;"><i class="bi bi-person"></i> Foydalanuvchi</h3>
             <p style="margin-bottom: 8px;"><strong>Username:</strong> {{ payment.user.username }}</p>
             <p style="margin-bottom: 8px;"><strong>ID:</strong> {{ payment.user.id }}</p>
             {% if payment.user.phone %}
             <p style="margin-bottom: 8px;"><strong>Telefon:</strong> {{ payment.user.phone }}</p>
             {% endif %}
-            <a href="{% url 'users:detail' payment.user.id %}" class="btn-sm" style="margin-top: 10px; display: inline-block;">Ko'rish</a>
+            <a href="{% url 'users:detail' payment.user.id %}" class="btn-sm" style="margin-top: 10px; display: inline-block;"><i class="bi bi-eye"></i></a>
         </div>
         
         <!-- Subscription Card -->
         {% if payment.subscription %}
         <div class="card">
-            <h3 style="margin-bottom: 15px;">📅 Obuna</h3>
+            <h3 style="margin-bottom: 15px;"><i class="bi bi-calendar-check"></i> Obuna</h3>
             <p style="margin-bottom: 8px;"><strong>Tarif:</strong> {{ payment.subscription.tariff.name }}</p>
             <p style="margin-bottom: 8px;"><strong>Status:</strong> 
                 <span class="badge {% if payment.subscription.status == 'active' %}badge-success{% else %}badge-secondary{% endif %}">
@@ -81,7 +83,7 @@
                 </span>
             </p>
             <p style="margin-bottom: 8px;"><strong>Muddat:</strong> {{ payment.subscription.tariff.duration_days }} kun</p>
-            <a href="{% url 'subscriptions:subscription_detail' payment.subscription.id %}" class="btn-sm" style="margin-top: 10px; display: inline-block;">Ko'rish</a>
+            <a href="{% url 'subscriptions:subscription_detail' payment.subscription.id %}" class="btn-sm" style="margin-top: 10px; display: inline-block;"><i class="bi bi-eye"></i></a>
         </div>
         {% endif %}
     </div>

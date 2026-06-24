@@ -3,37 +3,39 @@
 {% block title %}Yangi xabar{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
 <div class="page-header">
-    <h1 class="page-title">➕ Yangi xabar yuborish</h1>
-    <a href="/broadcasts/" class="btn btn-secondary">← Orqaga</a>
+    <h1 class="page-title"><i class="bi bi-plus-circle"></i> Yangi xabar yuborish</h1>
+    <a href="/broadcasts/" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Orqaga</a>
 </div>
 
 <div class="card">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Sarlavha</label>
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;"><i class="bi bi-chat-left-text"></i> Sarlavha</label>
         <input type="text" name="title" required 
                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
         
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Xabar matni</label>
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;"><i class="bi bi-chat-dots"></i> Xabar matni</label>
         <textarea name="message" rows="6" required
                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px; resize: vertical;"></textarea>
         
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Rasm (ixtiyoriy)</label>
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;"><i class="bi bi-image"></i> Rasm (ixtiyoriy)</label>
         <input type="file" name="image" accept="image/*"
                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
         
         <div style="margin-bottom: 16px;">
             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                 <input type="checkbox" name="target_all" checked>
-                <span>Barcha foydalanuvchilarga yuborish</span>
+                <span><i class="bi bi-check-all"></i> Barcha foydalanuvchilarga yuborish</span>
             </label>
         </div>
         
         <div style="display: flex; gap: 10px; margin-top: 24px;">
-            <button type="submit" class="btn">Yuborish</button>
-            <a href="/broadcasts/" class="btn btn-secondary">Bekor qilish</a>
+            <button type="submit" class="btn"><i class="bi bi-send"></i> Yuborish</button>
+            <a href="/broadcasts/" class="btn btn-secondary"><i class="bi bi-x"></i> Bekor qilish</a>
         </div>
     </form>
 </div>

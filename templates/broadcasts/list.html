@@ -3,9 +3,11 @@
 {% block title %}Xabarlar{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
 <div class="page-header">
-    <h1 class="page-title">📨 Xabarlar</h1>
-    <a href="/broadcasts/create/" class="btn">➕ Yangi xabar</a>
+    <h1 class="page-title"><i class="bi bi-send"></i> Xabarlar</h1>
+    <a href="/broadcasts/create/" class="btn"><i class="bi bi-plus-circle"></i> Yangi xabar</a>
 </div>
 
 <table>
@@ -27,11 +29,11 @@
             <td>{{ broadcast.title }}</td>
             <td>
                 {% if broadcast.status == 'completed' %}
-                <span class="badge badge-success">Tugallangan</span>
+                <span class="badge badge-success"><i class="bi bi-check-circle"></i> Tugallangan</span>
                 {% elif broadcast.status == 'sending' %}
-                <span class="badge badge-info">Yuborilmoqda</span>
+                <span class="badge badge-info"><i class="bi bi-hourglass-split"></i> Yuborilmoqda</span>
                 {% elif broadcast.status == 'draft' %}
-                <span class="badge badge-secondary">Qoralama</span>
+                <span class="badge badge-secondary"><i class="bi bi-file-text"></i> Qoralama</span>
                 {% else %}
                 <span class="badge badge-warning">{{ broadcast.get_status_display }}</span>
                 {% endif %}
@@ -40,8 +42,8 @@
             <td>{{ broadcast.failed_count }}</td>
             <td>{{ broadcast.created_at|date:"d.m.Y H:i" }}</td>
             <td>
-                <a href="/broadcasts/{{ broadcast.id }}/" style="color: #0066cc; text-decoration: none; margin-right: 10px;">Ko'rish</a>
-                <a href="/broadcasts/{{ broadcast.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" style="color: #dc3545; text-decoration: none;">O'chirish</a>
+                <a href="/broadcasts/{{ broadcast.id }}/" style="color: #0066cc; text-decoration: none; margin-right: 10px;"><i class="bi bi-eye"></i></a>
+                <a href="/broadcasts/{{ broadcast.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" style="color: #dc3545; text-decoration: none;"><i class="bi bi-trash"></i></a>
             </td>
         </tr>
         {% empty %}

@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="page-header">
-    <h1 class="page-title">⚙️ Sozlamani Tahrirlash</h1>
+    <h1 class="page-title">[Settings] Sozlamani Tahrirlash</h1>
     <p class="page-subtitle">{{ setting.key }}</p>
 </div>
 
@@ -27,7 +27,7 @@
             {{ form.file }}
             {% if setting.file %}
             <p style="margin-top: 8px; font-size: 14px; color: #6b7280;">
-                📎 Hozirgi fayl: <a href="{{ setting.file.url }}" target="_blank" style="color: #0066cc;">Ko'rish</a>
+                [Link] Hozirgi fayl: <a href="{{ setting.file.url }}" target="_blank" style="color: #0066cc;">Ko'rish</a>
             </p>
             {% endif %}
         </div>
@@ -38,8 +38,8 @@
         </div>
         
         <div style="margin-top: 30px; display: flex; gap: 10px;">
-            <button type="submit" class="btn btn-primary">💾 Saqlash</button>
-            <a href="{% url 'bot:settings_list' %}" class="btn btn-secondary">❌ Bekor qilish</a>
+            <button type="submit" class="btn btn-primary">[Save] Saqlash</button>
+            <a href="{% url 'bot:settings_list' %}" class="btn btn-secondary">[Close] Bekor qilish</a>
         </div>
     </form>
 </div>

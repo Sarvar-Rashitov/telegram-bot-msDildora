@@ -3,48 +3,50 @@
 {% block title %}Xabar #{{ broadcast.id }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
 <div class="page-header">
-    <h1 class="page-title">📨 {{ broadcast.title }}</h1>
+    <h1 class="page-title"><i class="bi bi-send"></i> {{ broadcast.title }}</h1>
     <div>
         {% if broadcast.status == 'draft' %}
         <a href="{% url 'broadcasts:send' broadcast.pk %}" class="btn btn-primary" 
-           onclick="return confirm('Xabarni yuborishni boshlaysizmi?')">📤 Yuborish</a>
+           onclick="return confirm('Xabarni yuborishni boshlaysizmi?')"><i class="bi bi-arrow-up-circle"></i> Yuborish</a>
         {% endif %}
-        <a href="/broadcasts/" class="btn btn-secondary">← Orqaga</a>
+        <a href="/broadcasts/" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Orqaga</a>
     </div>
 </div>
 
 <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
     <div class="stat-card">
-        <div class="stat-label">Status</div>
+        <div class="stat-label"><i class="bi bi-hourglass-split"></i> Status</div>
         <div class="stat-value" style="font-size: 18px;">
             {% if broadcast.status == 'completed' %}
-            <span class="badge badge-success">Tugallangan</span>
+            <span class="badge badge-success"><i class="bi bi-check-circle"></i> Tugallangan</span>
             {% elif broadcast.status == 'sending' %}
-            <span class="badge badge-info">Yuborilmoqda</span>
+            <span class="badge badge-info"><i class="bi bi-hourglass-split"></i> Yuborilmoqda</span>
             {% elif broadcast.status == 'draft' %}
-            <span class="badge badge-secondary">Qoralama</span>
+            <span class="badge badge-secondary"><i class="bi bi-file-text"></i> Qoralama</span>
             {% else %}
             <span class="badge badge-warning">{{ broadcast.get_status_display }}</span>
             {% endif %}
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Yuborildi</div>
+        <div class="stat-label"><i class="bi bi-check2"></i> Yuborildi</div>
         <div class="stat-value" style="font-size: 24px;">{{ broadcast.sent_count }}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Xatolar</div>
+        <div class="stat-label"><i class="bi bi-exclamation-circle"></i> Xatolar</div>
         <div class="stat-value" style="font-size: 24px;">{{ broadcast.failed_count }}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Yaratilgan</div>
+        <div class="stat-label"><i class="bi bi-calendar"></i> Yaratilgan</div>
         <div class="stat-value" style="font-size: 16px;">{{ broadcast.created_at|date:"d.m.Y H:i" }}</div>
     </div>
 </div>
 
 <div class="card">
-    <h3 style="margin-bottom: 20px;">Xabar matni</h3>
+    <h3 style="margin-bottom: 20px;"><i class="bi bi-chat-dots"></i> Xabar matni</h3>
     <div style="background: #f9fafb; padding: 20px; border-radius: 6px; white-space: pre-wrap; line-height: 1.6;">{{ broadcast.message }}</div>
     
     {% if broadcast.image %}
@@ -56,9 +58,9 @@
 
 <div class="card">
     <table style="box-shadow: none;">
-        <tr><td style="border: none; font-weight: 600; width: 200px;">Yaratuvchi</td><td style="border: none;">{{ broadcast.created_by.username|default:"—" }}</td></tr>
-        <tr><td style="font-weight: 600;">Barcha foydalanuvchilarga</td><td>{% if broadcast.target_all %}✅ Ha{% else %}❌ Yo'q{% endif %}</td></tr>
-        <tr><td style="font-weight: 600;">Rejalashtirilgan vaqt</td><td>{{ broadcast.scheduled_at|date:"d.m.Y H:i"|default:"—" }}</td></tr>
+        <tr><td style="border: none; font-weight: 600; width: 200px;"><i class="bi bi-person"></i> Yaratuvchi</td><td style="border: none;">{{ broadcast.created_by.username|default:"—" }}</td></tr>
+        <tr><td style="font-weight: 600;"><i class="bi bi-check-all"></i> Barcha foydalanuvchilarga</td><td>{% if broadcast.target_all %}<i class="bi bi-check-circle" style="color: #10b981;"></i> Ha{% else %}<i class="bi bi-x-circle" style="color: #ef4444;"></i> Yo'q{% endif %}</td></tr>
+        <tr><td style="font-weight: 600;"><i class="bi bi-calendar"></i> Rejalashtirilgan vaqt</td><td>{{ broadcast.scheduled_at|date:"d.m.Y H:i"|default:"—" }}</td></tr>
     </table>
 </div>
 {% endblock %}

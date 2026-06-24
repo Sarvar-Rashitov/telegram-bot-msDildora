@@ -3,27 +3,29 @@
 {% block title %}Obunalar{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
 <div class="page-header">
-    <h1 class="page-title">📋 Obunalar</h1>
+    <h1 class="page-title"><i class="bi bi-list-ul"></i> Obunalar</h1>
     <p class="page-subtitle">Barcha obunalar va ularning holati</p>
 </div>
 
 <!-- Statistics -->
 <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
     <div class="stat-card">
-        <div class="stat-label">Jami Obunalar</div>
+        <div class="stat-label"><i class="bi bi-sum"></i> Jami Obunalar</div>
         <div class="stat-value">{{ stats.total }}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Faol</div>
+        <div class="stat-label"><i class="bi bi-check-circle"></i> Faol</div>
         <div class="stat-value" style="color: #10b981;">{{ stats.active }}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Kutilmoqda</div>
+        <div class="stat-label"><i class="bi bi-clock"></i> Kutilmoqda</div>
         <div class="stat-value" style="color: #f59e0b;">{{ stats.pending }}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Tugagan</div>
+        <div class="stat-label"><i class="bi bi-calendar-x"></i> Tugagan</div>
         <div class="stat-value" style="color: #ef4444;">{{ stats.expired }}</div>
     </div>
 </div>
@@ -48,8 +50,8 @@
                    style="width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
         </div>
         
-        <button type="submit" class="btn btn-primary" style="width: 100%;">🔍 Qidirish</button>
-        <a href="{% url 'subscriptions:subscription_list' %}" class="btn btn-secondary" style="width: 100%; text-align: center;">🔄 Resetlash</a>
+        <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="bi bi-search"></i> Qidirish</button>
+        <a href="{% url 'subscriptions:subscription_list' %}" class="btn btn-secondary" style="width: 100%; text-align: center;"><i class="bi bi-arrow-clockwise"></i> Resetlash</a>
     </form>
 </div>
 
@@ -84,13 +86,13 @@
                 </td>
                 <td style="text-align: center;">
                     {% if subscription.status == 'active' %}
-                    <span class="badge badge-success">✓ Faol</span>
+                    <span class="badge badge-success"><i class="bi bi-check-circle"></i> Faol</span>
                     {% elif subscription.status == 'pending' %}
-                    <span class="badge badge-warning">⏳ Kutilmoqda</span>
+                    <span class="badge badge-warning"><i class="bi bi-clock"></i> Kutilmoqda</span>
                     {% elif subscription.status == 'expired' %}
-                    <span class="badge badge-danger">✗ Tugagan</span>
+                    <span class="badge badge-danger"><i class="bi bi-calendar-x"></i> Tugagan</span>
                     {% elif subscription.status == 'cancelled' %}
-                    <span class="badge badge-secondary">⊘ Bekor</span>
+                    <span class="badge badge-secondary"><i class="bi bi-x-circle"></i> Bekor</span>
                     {% else %}
                     <span class="badge badge-secondary">{{ subscription.get_status_display }}</span>
                     {% endif %}
@@ -98,7 +100,7 @@
                 <td style="font-size: 13px; color: #6b7280;">{{ subscription.start_date|date:"d.m.Y"|default:"-" }}</td>
                 <td style="font-size: 13px; color: #6b7280;">{{ subscription.end_date|date:"d.m.Y"|default:"-" }}</td>
                 <td style="text-align: center;">
-                    <a href="{% url 'subscriptions:subscription_detail' subscription.pk %}" class="btn-sm">👁️</a>
+                    <a href="{% url 'subscriptions:subscription_detail' subscription.pk %}" class="btn-sm"><i class="bi bi-eye"></i></a>
                 </td>
             </tr>
             {% endfor %}
@@ -106,7 +108,7 @@
     </table>
     {% else %}
     <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
-        <div style="font-size: 48px; margin-bottom: 15px;">📋</div>
+        <div style="font-size: 48px; margin-bottom: 15px;"><i class="bi bi-inbox"></i></div>
         <p style="font-size: 16px;">Filter shartiga mos obunalar topilmadi</p>
     </div>
     {% endif %}

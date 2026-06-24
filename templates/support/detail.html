@@ -3,56 +3,58 @@
 {% block title %}Murojaat #{{ ticket.id }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
 <div class="page-header">
-    <h1 class="page-title">💬 Murojaat #{{ ticket.id }}</h1>
-    <a href="/support/" class="btn btn-secondary">← Orqaga</a>
+    <h1 class="page-title"><i class="bi bi-chat-dots"></i> Murojaat #{{ ticket.id }}</h1>
+    <a href="/support/" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Orqaga</a>
 </div>
 
 <div class="card">
     <h3 style="margin-bottom: 10px;">{{ ticket.subject }}</h3>
     <p style="color: #666; font-size: 13px; margin-bottom: 20px;">
-        <strong>Foydalanuvchi:</strong> {{ ticket.user.username }} | 
-        <strong>Sana:</strong> {{ ticket.created_at|date:"d.m.Y H:i" }} |
-        <strong>Status:</strong> 
+        <strong><i class="bi bi-person"></i> Foydalanuvchi:</strong> {{ ticket.user.username }} | 
+        <strong><i class="bi bi-calendar"></i> Sana:</strong> {{ ticket.created_at|date:"d.m.Y H:i" }} |
+        <strong><i class="bi bi-hourglass-split"></i> Status:</strong> 
         {% if ticket.status == 'open' %}
-        <span class="badge badge-info">Ochiq</span>
+        <span class="badge badge-info"><i class="bi bi-envelope"></i> Ochiq</span>
         {% elif ticket.status == 'in_progress' %}
-        <span class="badge badge-warning">Jarayonda</span>
+        <span class="badge badge-warning"><i class="bi bi-hourglass-split"></i> Jarayonda</span>
         {% elif ticket.status == 'resolved' %}
-        <span class="badge badge-success">Hal qilindi</span>
+        <span class="badge badge-success"><i class="bi bi-check-circle"></i> Hal qilindi</span>
         {% else %}
-        <span class="badge badge-secondary">Yopildi</span>
+        <span class="badge badge-secondary"><i class="bi bi-x-circle"></i> Yopildi</span>
         {% endif %}
     </p>
     
     <div style="background: #f9fafb; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
-        <strong style="display: block; margin-bottom: 10px;">Xabar:</strong>
+        <strong style="display: block; margin-bottom: 10px;"><i class="bi bi-chat-left-text"></i> Xabar:</strong>
         <p style="white-space: pre-wrap; line-height: 1.6;">{{ ticket.message }}</p>
     </div>
     
     {% if ticket.admin_response %}
     <div style="background: #d4edda; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
-        <strong style="display: block; margin-bottom: 10px; color: #155724;">Admin javobi:</strong>
+        <strong style="display: block; margin-bottom: 10px; color: #155724;"><i class="bi bi-chat-left-text" style="color: #155724;"></i> Admin javobi:</strong>
         <p style="white-space: pre-wrap; line-height: 1.6; color: #155724;">{{ ticket.admin_response }}</p>
     </div>
     {% endif %}
     
     <form method="post" style="margin-top: 30px;">
         {% csrf_token %}
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Status</label>
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;"><i class="bi bi-hourglass-split"></i> Status</label>
         <select name="status" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
-            <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Ochiq</option>
-            <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>Jarayonda</option>
-            <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Hal qilindi</option>
-            <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Yopildi</option>
+            <option value="open" {% if ticket.status == 'open' %}selected{% endif %}><i class="bi bi-envelope"></i> Ochiq</option>
+            <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}><i class="bi bi-hourglass-split"></i> Jarayonda</option>
+            <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}><i class="bi bi-check-circle"></i> Hal qilindi</option>
+            <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}><i class="bi bi-x-circle"></i> Yopildi</option>
         </select>
         
-        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Admin javobi</label>
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;"><i class="bi bi-chat-left-text"></i> Admin javobi</label>
         <textarea name="admin_response" rows="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px; resize: vertical;">{{ ticket.admin_response }}</textarea>
         
         <div style="display: flex; gap: 10px;">
-            <button type="submit" class="btn">Saqlash</button>
-            <a href="/support/{{ ticket.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" class="btn btn-secondary" style="background: #dc3545;">O'chirish</a>
+            <button type="submit" class="btn"><i class="bi bi-check-lg"></i> Saqlash</button>
+            <a href="/support/{{ ticket.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" class="btn btn-secondary" style="background: #dc3545;"><i class="bi bi-trash"></i> O'chirish</a>
         </div>
     </form>
 </div>
