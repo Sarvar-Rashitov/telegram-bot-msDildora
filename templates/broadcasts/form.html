@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Yangi xabar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">➕ Yangi xabar yuborish</h1>
+    <a href="/broadcasts/" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div class="card">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Sarlavha</label>
+        <input type="text" name="title" required 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Xabar matni</label>
+        <textarea name="message" rows="6" required
+                  style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px; resize: vertical;"></textarea>
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Rasm (ixtiyoriy)</label>
+        <input type="file" name="image" accept="image/*"
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <div style="margin-bottom: 16px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" name="target_all" checked>
+                <span>Barcha foydalanuvchilarga yuborish</span>
+            </label>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+            <button type="submit" class="btn">Yuborish</button>
+            <a href="/broadcasts/" class="btn btn-secondary">Bekor qilish</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

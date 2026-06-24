@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Tariflar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">💳 Tariflar</h1>
+    <a href="/subscriptions/tariffs/create/" class="btn">➕ Yangi tarif</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nomi</th>
+            <th>Narxi</th>
+            <th>Muddati</th>
+            <th>Status</th>
+            <th>Amallar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tariff in tariffs %}
+        <tr>
+            <td>{{ tariff.id }}</td>
+            <td>{{ tariff.name }}</td>
+            <td>{{ tariff.price|floatformat:0 }} so'm</td>
+            <td>{{ tariff.duration_days }} kun</td>
+            <td>
+                {% if tariff.is_active %}
+                <span class="badge badge-success">Faol</span>
+                {% else %}
+                <span class="badge badge-secondary">Nofaol</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="/subscriptions/tariffs/{{ tariff.id }}/edit/" style="color: #0066cc; text-decoration: none; margin-right: 10px;">Tahrirlash</a>
+                <a href="/subscriptions/tariffs/{{ tariff.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" style="color: #dc3545; text-decoration: none;">O'chirish</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align: center; padding: 40px;">Tariflar topilmadi</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top: 30px;">
+    <a href="/subscriptions/promo/" class="btn btn-secondary">🎫 Promo kodlar</a>
+</div>
+{% endblock %}

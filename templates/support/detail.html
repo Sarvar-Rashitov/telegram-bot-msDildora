@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Murojaat #{{ ticket.id }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">💬 Murojaat #{{ ticket.id }}</h1>
+    <a href="/support/" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div class="card">
+    <h3 style="margin-bottom: 10px;">{{ ticket.subject }}</h3>
+    <p style="color: #666; font-size: 13px; margin-bottom: 20px;">
+        <strong>Foydalanuvchi:</strong> {{ ticket.user.username }} | 
+        <strong>Sana:</strong> {{ ticket.created_at|date:"d.m.Y H:i" }} |
+        <strong>Status:</strong> 
+        {% if ticket.status == 'open' %}
+        <span class="badge badge-info">Ochiq</span>
+        {% elif ticket.status == 'in_progress' %}
+        <span class="badge badge-warning">Jarayonda</span>
+        {% elif ticket.status == 'resolved' %}
+        <span class="badge badge-success">Hal qilindi</span>
+        {% else %}
+        <span class="badge badge-secondary">Yopildi</span>
+        {% endif %}
+    </p>
+    
+    <div style="background: #f9fafb; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+        <strong style="display: block; margin-bottom: 10px;">Xabar:</strong>
+        <p style="white-space: pre-wrap; line-height: 1.6;">{{ ticket.message }}</p>
+    </div>
+    
+    {% if ticket.admin_response %}
+    <div style="background: #d4edda; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+        <strong style="display: block; margin-bottom: 10px; color: #155724;">Admin javobi:</strong>
+        <p style="white-space: pre-wrap; line-height: 1.6; color: #155724;">{{ ticket.admin_response }}</p>
+    </div>
+    {% endif %}
+    
+    <form method="post" style="margin-top: 30px;">
+        {% csrf_token %}
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Status</label>
+        <select name="status" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+            <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Ochiq</option>
+            <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>Jarayonda</option>
+            <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Hal qilindi</option>
+            <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Yopildi</option>
+        </select>
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Admin javobi</label>
+        <textarea name="admin_response" rows="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px; resize: vertical;">{{ ticket.admin_response }}</textarea>
+        
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn">Saqlash</button>
+            <a href="/support/{{ ticket.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" class="btn btn-secondary" style="background: #dc3545;">O'chirish</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

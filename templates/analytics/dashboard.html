@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Analitika{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">📊 Analitika</h1>
+    <p class="page-subtitle">Tizim statistikasi va hisobotlar</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Jami foydalanuvchilar</div>
+        <div class="stat-value">{{ stats.total_users }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Faol obunalar</div>
+        <div class="stat-value">{{ stats.active_subscriptions }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Bugungi to'lovlar</div>
+        <div class="stat-value">{{ stats.today_payments }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Bugungi daromad</div>
+        <div class="stat-value">{{ stats.today_revenue|floatformat:0 }} so'm</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Jami daromad</div>
+        <div class="stat-value">{{ stats.total_revenue|floatformat:0 }} so'm</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Konversiya</div>
+        <div class="stat-value">{{ stats.conversion_rate|floatformat:1 }}%</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="margin-bottom: 20px;">So'nggi faoliyat</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Foydalanuvchi</th>
+                <th>Harakat</th>
+                <th>Tavsif</th>
+                <th>Sana</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in recent_logs %}
+            <tr>
+                <td>{{ log.user.username|default:"Tizim" }}</td>
+                <td>{{ log.get_action_display }}</td>
+                <td>{{ log.description }}</td>
+                <td>{{ log.created_at|date:"d.m.Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" style="text-align: center; padding: 40px;">Hozircha faoliyat yo'q</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

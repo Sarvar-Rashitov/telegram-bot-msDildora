@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Yangi promo kod{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">➕ Yangi promo kod</h1>
+    <a href="/subscriptions/promo/" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Promo kod</label>
+        <input type="text" name="code" required 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;" 
+               placeholder="SUMMER2024">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Chegirma (foizda)</label>
+        <input type="number" name="discount_percent" value="0" min="0" max="100"
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Chegirma (summada)</label>
+        <input type="number" name="discount_amount" value="0" step="0.01"
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Foydalanish limiti</label>
+        <input type="number" name="usage_limit" value="1" min="1" required
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <div style="margin-bottom: 16px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" name="is_active" checked>
+                <span>Faol</span>
+            </label>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+            <button type="submit" class="btn">Saqlash</button>
+            <a href="/subscriptions/promo/" class="btn btn-secondary">Bekor qilish</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

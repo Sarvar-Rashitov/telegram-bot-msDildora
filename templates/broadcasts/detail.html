@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Xabar #{{ broadcast.id }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">📨 {{ broadcast.title }}</h1>
+    <a href="/broadcasts/" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <div class="stat-card">
+        <div class="stat-label">Status</div>
+        <div class="stat-value" style="font-size: 18px;">
+            {% if broadcast.status == 'completed' %}
+            <span class="badge badge-success">Tugallangan</span>
+            {% elif broadcast.status == 'sending' %}
+            <span class="badge badge-info">Yuborilmoqda</span>
+            {% elif broadcast.status == 'draft' %}
+            <span class="badge badge-secondary">Qoralama</span>
+            {% else %}
+            <span class="badge badge-warning">{{ broadcast.get_status_display }}</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Yuborildi</div>
+        <div class="stat-value" style="font-size: 24px;">{{ broadcast.sent_count }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Xatolar</div>
+        <div class="stat-value" style="font-size: 24px;">{{ broadcast.failed_count }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Yaratilgan</div>
+        <div class="stat-value" style="font-size: 16px;">{{ broadcast.created_at|date:"d.m.Y H:i" }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 style="margin-bottom: 20px;">Xabar matni</h3>
+    <div style="background: #f9fafb; padding: 20px; border-radius: 6px; white-space: pre-wrap; line-height: 1.6;">{{ broadcast.message }}</div>
+    
+    {% if broadcast.image %}
+    <div style="margin-top: 20px;">
+        <img src="{{ broadcast.image.url }}" alt="Broadcast image" style="max-width: 100%; border-radius: 6px;">
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <table style="box-shadow: none;">
+        <tr><td style="border: none; font-weight: 600; width: 200px;">Yaratuvchi</td><td style="border: none;">{{ broadcast.created_by.username|default:"—" }}</td></tr>
+        <tr><td style="font-weight: 600;">Barcha foydalanuvchilarga</td><td>{% if broadcast.target_all %}✅ Ha{% else %}❌ Yo'q{% endif %}</td></tr>
+        <tr><td style="font-weight: 600;">Rejalashtirilgan vaqt</td><td>{{ broadcast.scheduled_at|date:"d.m.Y H:i"|default:"—" }}</td></tr>
+    </table>
+</div>
+{% endblock %}

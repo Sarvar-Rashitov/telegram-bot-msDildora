@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if channel %}Kanal tahrirlash{% else %}Yangi kanal{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{% if channel %}✏️ Kanal tahrirlash{% else %}➕ Yangi kanal{% endif %}</h1>
+    <a href="/channels/" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Kanal nomi</label>
+        <input type="text" name="name" value="{{ channel.name }}" required 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Channel ID</label>
+        <input type="number" name="channel_id" value="{{ channel.channel_id }}" required 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;"
+               placeholder="-1001234567890">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Invite Link</label>
+        <input type="url" name="invite_link" value="{{ channel.invite_link }}" 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;"
+               placeholder="https://t.me/+xxxxx">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Tavsif</label>
+        <textarea name="description" rows="3" 
+                  style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px; resize: vertical;">{{ channel.description }}</textarea>
+        
+        <div style="margin-bottom: 16px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" name="is_active" {% if channel.is_active or not channel %}checked{% endif %}>
+                <span>Faol</span>
+            </label>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+            <button type="submit" class="btn">Saqlash</button>
+            <a href="/channels/" class="btn btn-secondary">Bekor qilish</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

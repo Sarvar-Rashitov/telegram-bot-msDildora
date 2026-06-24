@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">📊 Dashboard</h1>
+    <p class="page-subtitle">Xush kelibsiz, {{ request.user.username }}!</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Jami foydalanuvchilar</div>
+        <div class="stat-value">{{ stats.total_users }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Aktiv obunalar</div>
+        <div class="stat-value">{{ stats.active_subscriptions }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Bugungi to'lovlar</div>
+        <div class="stat-value">{{ stats.today_payments }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Bugungi daromad</div>
+        <div class="stat-value">{{ stats.today_revenue|floatformat:0 }} so'm</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Jami daromad</div>
+        <div class="stat-value">{{ stats.total_revenue|floatformat:0 }} so'm</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Kutayotgan murojaatlar</div>
+        <div class="stat-value">{{ stats.pending_tickets }}</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+    <div class="card">
+        <h3 style="margin-bottom: 20px;">So'nggi foydalanuvchilar</h3>
+        <table style="box-shadow: none;">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Telegram ID</th>
+                    <th>Sana</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in recent_users %}
+                <tr>
+                    <td><a href="/users/{{ user.id }}/" style="color: #0066cc; text-decoration: none;">{{ user.username }}</a></td>
+                    <td>{{ user.telegram_id|default:"—" }}</td>
+                    <td>{{ user.created_at|date:"d.m.Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" style="text-align: center; padding: 20px;">Ma'lumot yo'q</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom: 20px;">So'nggi to'lovlar</h3>
+        <table style="box-shadow: none;">
+            <thead>
+                <tr>
+                    <th>Foydalanuvchi</th>
+                    <th>Summa</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in recent_payments %}
+                <tr>
+                    <td><a href="/users/{{ payment.user.id }}/" style="color: #0066cc; text-decoration: none;">{{ payment.user.username }}</a></td>
+                    <td>{{ payment.amount|floatformat:0 }} so'm</td>
+                    <td>
+                        {% if payment.status == 'success' %}
+                        <span class="badge badge-success">Muvaffaqiyatli</span>
+                        {% else %}
+                        <span class="badge badge-warning">{{ payment.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" style="text-align: center; padding: 20px;">Ma'lumot yo'q</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div style="margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap;">
+    <a href="/users/" class="btn">👤 Foydalanuvchilar</a>
+    <a href="/subscriptions/" class="btn">📅 Obunalar</a>
+    <a href="/subscriptions/tariffs/" class="btn">💳 Tariflar</a>
+    <a href="/payments/" class="btn">💰 To'lovlar</a>
+    <a href="/channels/" class="btn">📢 Kanallar</a>
+    <a href="/broadcasts/" class="btn">📨 Xabarlar</a>
+    <a href="/support/" class="btn">💬 Yordam</a>
+    <a href="/analytics/" class="btn">📊 Analitika</a>
+</div>
+{% endblock %}

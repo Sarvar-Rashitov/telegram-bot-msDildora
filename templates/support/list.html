@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Murojaatlar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">💬 Murojaatlar</h1>
+    <p class="page-subtitle">Foydalanuvchilar murojaatlari</p>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Foydalanuvchi</th>
+            <th>Mavzu</th>
+            <th>Xabar</th>
+            <th>Status</th>
+            <th>Sana</th>
+            <th>Amallar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ticket in tickets %}
+        <tr>
+            <td>{{ ticket.id }}</td>
+            <td>{{ ticket.user.username }}</td>
+            <td>{{ ticket.subject }}</td>
+            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ ticket.message }}</td>
+            <td>
+                {% if ticket.status == 'open' %}
+                <span class="badge badge-info">Ochiq</span>
+                {% elif ticket.status == 'in_progress' %}
+                <span class="badge badge-warning">Jarayonda</span>
+                {% elif ticket.status == 'resolved' %}
+                <span class="badge badge-success">Hal qilindi</span>
+                {% else %}
+                <span class="badge badge-secondary">Yopildi</span>
+                {% endif %}
+            </td>
+            <td>{{ ticket.created_at|date:"d.m.Y H:i" }}</td>
+            <td>
+                <a href="/support/{{ ticket.id }}/" class="btn" style="padding: 6px 12px; font-size: 12px;">Ko'rish</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align: center; padding: 40px;">Murojaatlar topilmadi</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

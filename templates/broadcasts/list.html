@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Xabarlar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">📨 Xabarlar</h1>
+    <a href="/broadcasts/create/" class="btn">➕ Yangi xabar</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Sarlavha</th>
+            <th>Status</th>
+            <th>Yuborildi</th>
+            <th>Xato</th>
+            <th>Sana</th>
+            <th>Amallar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for broadcast in broadcasts %}
+        <tr>
+            <td>{{ broadcast.id }}</td>
+            <td>{{ broadcast.title }}</td>
+            <td>
+                {% if broadcast.status == 'completed' %}
+                <span class="badge badge-success">Tugallangan</span>
+                {% elif broadcast.status == 'sending' %}
+                <span class="badge badge-info">Yuborilmoqda</span>
+                {% elif broadcast.status == 'draft' %}
+                <span class="badge badge-secondary">Qoralama</span>
+                {% else %}
+                <span class="badge badge-warning">{{ broadcast.get_status_display }}</span>
+                {% endif %}
+            </td>
+            <td>{{ broadcast.sent_count }}</td>
+            <td>{{ broadcast.failed_count }}</td>
+            <td>{{ broadcast.created_at|date:"d.m.Y H:i" }}</td>
+            <td>
+                <a href="/broadcasts/{{ broadcast.id }}/" style="color: #0066cc; text-decoration: none; margin-right: 10px;">Ko'rish</a>
+                <a href="/broadcasts/{{ broadcast.id }}/delete/" onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')" style="color: #dc3545; text-decoration: none;">O'chirish</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align: center; padding: 40px;">Xabarlar topilmadi</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

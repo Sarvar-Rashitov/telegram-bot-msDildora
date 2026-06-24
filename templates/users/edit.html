@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Tahrirlash - {{ user_obj.username }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">✏️ Foydalanuvchini tahrirlash</h1>
+    <a href="/users/{{ user_obj.id }}/" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Username</label>
+        <input type="text" name="username" value="{{ user_obj.username }}" required 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Ism</label>
+        <input type="text" name="first_name" value="{{ user_obj.first_name }}" 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Familiya</label>
+        <input type="text" name="last_name" value="{{ user_obj.last_name }}" 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Email</label>
+        <input type="email" name="email" value="{{ user_obj.email }}" 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Telefon</label>
+        <input type="text" name="phone" value="{{ user_obj.phone }}" 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Til</label>
+        <select name="language" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+            <option value="uz" {% if user_obj.language == 'uz' %}selected{% endif %}>O'zbek</option>
+            <option value="ru" {% if user_obj.language == 'ru' %}selected{% endif %}>Русский</option>
+        </select>
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Balans (so'm)</label>
+        <input type="number" name="balance" value="{{ user_obj.balance }}" step="0.01"
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <div style="margin-bottom: 16px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" name="is_blocked" {% if user_obj.is_blocked %}checked{% endif %}>
+                <span>Bloklangan</span>
+            </label>
+        </div>
+        
+        <div style="margin-bottom: 16px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" name="is_staff" {% if user_obj.is_staff %}checked{% endif %}>
+                <span>Admin huquqi</span>
+            </label>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+            <button type="submit" class="btn">Saqlash</button>
+            <a href="/users/{{ user_obj.id }}/" class="btn btn-secondary">Bekor qilish</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

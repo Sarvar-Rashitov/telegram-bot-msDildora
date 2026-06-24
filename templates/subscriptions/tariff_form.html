@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if tariff %}Tarif tahrirlash{% else %}Yangi tarif{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{% if tariff %}✏️ Tarif tahrirlash{% else %}➕ Yangi tarif{% endif %}</h1>
+    <a href="/subscriptions/tariffs/" class="btn btn-secondary">← Orqaga</a>
+</div>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Tarif nomi</label>
+        <input type="text" name="name" value="{{ tariff.name }}" required 
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Tavsif</label>
+        <textarea name="description" rows="3" 
+                  style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px; resize: vertical;">{{ tariff.description }}</textarea>
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Narxi (so'm)</label>
+        <input type="number" name="price" value="{{ tariff.price }}" step="0.01" required
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Muddati (kunlarda)</label>
+        <input type="number" name="duration_days" value="{{ tariff.duration_days }}" required
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 16px;">
+        
+        <div style="margin-bottom: 16px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" name="is_active" {% if tariff.is_active or not tariff %}checked{% endif %}>
+                <span>Faol</span>
+            </label>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+            <button type="submit" class="btn">Saqlash</button>
+            <a href="/subscriptions/tariffs/" class="btn btn-secondary">Bekor qilish</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
