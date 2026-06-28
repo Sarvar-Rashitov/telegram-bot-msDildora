@@ -4,6 +4,8 @@ from . import views
 app_name = 'bot'
 
 urlpatterns = [
+    path('webhook/', views.telegram_webhook, name='telegram_webhook'),
+    
     path('settings/', views.bot_settings_list, name='settings_list'),
     path('settings/<int:pk>/edit/', views.bot_settings_edit, name='settings_edit'),
     

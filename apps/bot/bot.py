@@ -74,16 +74,16 @@ dp.chat_member.register(
     ChatMemberUpdatedFilter(member_status_changed=MEMBER)
 )
 
-async def start_bot():
-    logger.info("Bot ishga tushmoqda...")
-    logger.info("Handler registratsiyasi:")
-    logger.info(f"- Message handlers: {len(dp.message.handlers)}")
-    logger.info(f"- Callback handlers: {len(dp.callback_query.handlers)}")
+async def start_bot_polling():
+    """Bot polling rejimida (development)"""
+    logger.info("🚀 Bot polling rejimida ishga tushmoqda...")
+    logger.info(f"📋 Handler registratsiyasi: {len(dp.message.handlers)} message, {len(dp.callback_query.handlers)} callback")
     
     try:
         await dp.start_polling(bot, allowed_updates=['message', 'callback_query', 'chat_member'])
     except Exception as e:
-        logger.error(f"Bot xatosi: {e}", exc_info=True)
+        logger.error(f"❌ Bot xatosi: {e}", exc_info=True)
 
 def run_bot():
-    asyncio.run(start_bot())
+    """Polling rejimida botni ishga tushirish"""
+    asyncio.run(start_bot_polling())

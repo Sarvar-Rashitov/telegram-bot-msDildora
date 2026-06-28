@@ -115,6 +115,7 @@ SECURE_CONTENT_SECURITY_POLICY = {
 # Telegram Bot
 BOT_TOKEN = config('BOT_TOKEN', default='')
 BOT_USERNAME = config('BOT_USERNAME', default='')
+BOT_WEBHOOK_URL = config('BOT_WEBHOOK_URL', default='')
 
 # Click Payment
 CLICK_MERCHANT_ID = config('CLICK_MERCHANT_ID', default='')
